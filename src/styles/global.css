@@ -1,7 +1,7 @@
 :root {
   color-scheme: light;
-  --paper: #fbfaf6;
-  --paper-raised: #fffefa;
+  --paper: #ffffff;
+  --paper-raised: #ffffff;
   --ink: #232723;
   --muted: #747a74;
   --faint: #969c96;
@@ -50,9 +50,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(circle at 10% -5%, color-mix(in srgb, var(--accent-soft) 50%, transparent), transparent 30rem),
-    var(--paper);
+  background: var(--paper);
 }
 
 ::selection {
