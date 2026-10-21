@@ -1,0 +1,44 @@
+---
+import PostList from "../../components/PostList.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { slugifyTag } from "../../lib/content.mjs";
+import { getPosts } from "../../lib/site-posts.mjs";
+
+export function getStaticPaths() {
+  const allPosts = getPosts();
+  const tagMap = new Map();
+
+  for (const post of allPosts) {
+    for (const tag of post.frontmatter.tags ?? []) {
+      const slug = slugifyTag(tag);
+      if (!tagMap.has(slug)) {
+        tagMap.set(slug, tag);
+      }
+    }
+  }
+
+  return [...tagMap.entries()].map(([slug, tag]) => ({
+    params: { tag: slug },
+    props: {
+      tag,
+      posts: allPosts.filter((post) => post.frontmatter.tags?.includes(tag)),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout title={`标签：${tag}`} description={`Yisoul 关于「${tag}」的文章。`}>
+  <div class="page-narrow">
+    <header class="page-heading reveal">
+      <div class="article-kicker">Tag</div>
+      <h1>{tag}</h1>
+      <p>共 {posts.length} 篇文章。</p>
+    </header>
+    <div class="reveal">
+      <PostList posts={posts} />
+    </div>
+  </div>
+</BaseLayout>
+

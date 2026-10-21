@@ -1,0 +1,28 @@
+---
+import { formatDate } from "../lib/content.mjs";
+
+const { posts, empty = "还没有文章。" } = Astro.props;
+---
+
+{
+  posts.length ? (
+    <ul class="post-list">
+      {posts.map((post) => (
+        <li class="post-list-item">
+          <div>
+            <h2 class="post-list-title">
+              <a href={`/blog/${post.slug}/`}>{post.frontmatter.title}</a>
+            </h2>
+            <p class="post-list-description">{post.frontmatter.description}</p>
+          </div>
+          <time class="post-list-date" datetime={post.frontmatter.date}>
+            {formatDate(post.frontmatter.date)}
+          </time>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="empty-state">{empty}</p>
+  )
+}
+

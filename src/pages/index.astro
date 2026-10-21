@@ -1,0 +1,83 @@
+---
+import PostList from "../components/PostList.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { site } from "../data/site.mjs";
+import { getPosts } from "../lib/site-posts.mjs";
+
+const posts = getPosts().slice(0, 3);
+---
+
+<BaseLayout title={site.title}>
+  <div class="shell home-layout">
+    <aside class="profile reveal" aria-label="个人资料">
+      <div class="profile-photo">
+        <span class="profile-initials" aria-hidden="true">{site.name.charAt(0)}</span>
+        {site.avatar && (
+          <img
+            src={site.avatar}
+            alt={`${site.name} 的头像`}
+            width="320"
+            height="320"
+            onerror="this.style.display='none'"
+          />
+        )}
+      </div>
+      <h1 class="profile-name">{site.name}</h1>
+      <p class="profile-role">{site.role}</p>
+      <p class="profile-role">{site.affiliation}</p>
+      <p class="profile-location">{site.location}</p>
+      <nav class="profile-links" aria-label="个人链接">
+        {site.links.map((link) => (
+          <a
+            href={link.href}
+            target={link.external ? "_blank" : undefined}
+            rel={link.external ? "noreferrer" : undefined}
+          >
+            {link.label}
+            {link.external && <span class="external-arrow" aria-hidden="true"> ↗</span>}
+          </a>
+        ))}
+      </nav>
+    </aside>
+
+    <div class="home-content">
+      <section class="intro reveal" id="about" aria-label="简介">
+        {site.intro.map((paragraph) => <p>{paragraph}</p>)}
+      </section>
+
+      <section class="content-section reveal" aria-labelledby="news-heading">
+        <span class="eyebrow" id="news-heading">News</span>
+        <div class="news-list">
+          {site.news.map((item) => (
+            <div class="news-item">
+              <time>{item.date}</time>
+              <span>{item.text}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section class="content-section reveal" aria-labelledby="work-heading">
+        <span class="eyebrow" id="work-heading">Selected Work</span>
+        {site.projects.map((project) => (
+          <article class="work-item">
+            <h2 class="work-title">
+              <a href={project.href} target="_blank" rel="noreferrer">{project.title}</a>
+            </h2>
+            <p class="work-description">{project.description}</p>
+            <p class="work-meta">{project.meta}</p>
+          </article>
+        ))}
+      </section>
+
+      <section class="content-section reveal" aria-labelledby="writing-heading">
+        <div class="section-heading">
+          <span class="eyebrow" id="writing-heading">Writing</span>
+          <a class="text-link" href="/blog/">全部文章 →</a>
+        </div>
+        <PostList posts={posts} />
+      </section>
+    </div>
+  </div>
+</BaseLayout>
+

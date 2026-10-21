@@ -1,0 +1,47 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatDate, slugifyTag } from "../../lib/content.mjs";
+import { getPosts } from "../../lib/site-posts.mjs";
+
+export function getStaticPaths() {
+  return getPosts().map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, frontmatter } = post;
+---
+
+<BaseLayout
+  title={frontmatter.title}
+  description={frontmatter.description}
+  type="article"
+>
+  <article class="page-narrow">
+    <header class="article-header">
+      <div class="article-kicker">Writing</div>
+      <h1>{frontmatter.title}</h1>
+      {frontmatter.description && <p class="article-description">{frontmatter.description}</p>}
+      <div class="article-meta">
+        <time datetime={frontmatter.date}>{formatDate(frontmatter.date)}</time>
+        <span class="tag-list">
+          {frontmatter.tags?.map((tag) => (
+            <a class="tag" href={`/tags/${slugifyTag(tag)}/`}>{tag}</a>
+          ))}
+        </span>
+      </div>
+    </header>
+
+    <div class="prose">
+      <Content />
+    </div>
+
+    <footer class="article-footer">
+      <a href="/blog/">← 返回文章列表</a>
+      <a href="/rss.xml">订阅 RSS</a>
+    </footer>
+  </article>
+</BaseLayout>
+

@@ -1,0 +1,46 @@
+---
+import { formatDate } from "../lib/content.mjs";
+import { getPosts } from "../lib/site-posts.mjs";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const posts = getPosts();
+const groups = new Map();
+
+for (const post of posts) {
+  const year = post.frontmatter.date.slice(0, 4);
+  if (!groups.has(year)) {
+    groups.set(year, []);
+  }
+  groups.get(year).push(post);
+}
+---
+
+<BaseLayout title="归档" description="按时间浏览 Yisoul 的全部文章。">
+  <div class="page-narrow">
+    <header class="page-heading reveal">
+      <h1>归档</h1>
+      <p>按时间顺序保留的写作记录。</p>
+    </header>
+
+    {
+      [...groups.entries()].map(([year, yearPosts]) => (
+        <section class="reveal">
+          <h2 class="archive-year">{year}</h2>
+          <ul class="post-list">
+            {yearPosts.map((post) => (
+              <li class="post-list-item">
+                <h3 class="post-list-title">
+                  <a href={`/blog/${post.slug}/`}>{post.frontmatter.title}</a>
+                </h3>
+                <time class="post-list-date" datetime={post.frontmatter.date}>
+                  {formatDate(post.frontmatter.date)}
+                </time>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</BaseLayout>
+

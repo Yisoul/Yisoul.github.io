@@ -1,0 +1,37 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { slugifyTag } from "../../lib/content.mjs";
+import { getPosts } from "../../lib/site-posts.mjs";
+
+const posts = getPosts();
+const counts = new Map();
+
+for (const post of posts) {
+  for (const tag of post.frontmatter.tags ?? []) {
+    counts.set(tag, (counts.get(tag) ?? 0) + 1);
+  }
+}
+
+const tags = [...counts.entries()].sort(([left], [right]) =>
+  left.localeCompare(right, "zh-CN"),
+);
+---
+
+<BaseLayout title="标签" description="按主题浏览 Yisoul 的文章。">
+  <div class="page-narrow">
+    <header class="page-heading reveal">
+      <h1>标签</h1>
+      <p>从主题进入文章。</p>
+    </header>
+    <div class="tag-cloud reveal">
+      {
+        tags.map(([tag, count]) => (
+          <a class="tag" href={`/tags/${slugifyTag(tag)}/`}>
+            {tag}<span class="tag-count">{count}</span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</BaseLayout>
+
