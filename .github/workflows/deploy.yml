@@ -35,6 +35,8 @@ jobs:
         run: npm test
 
       - name: Build
+        env:
+          ASTRO_TELEMETRY_DISABLED: 1
         run: npm run build
 
       - name: Configure Pages
